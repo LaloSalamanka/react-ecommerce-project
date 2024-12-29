@@ -57,7 +57,7 @@ function Login() {
         // 加載用戶的購物車數據
         await loadCart(data.user.userId);
 
-        // 合併本地存儲中的購物車數據
+        // 合併未登入時本地存儲中的購物車數據
         const localCart = localStorage.getItem('cartItems');
         const parsedLocalCart = JSON.parse(localCart);
         if (parsedLocalCart.length > 0) {

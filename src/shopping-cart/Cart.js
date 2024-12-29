@@ -1,12 +1,18 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Cart() {
   const { cartItems, removeFromCart } = useCart();
+  const {isLoggedIn} = useAuth();
   const navigate = useNavigate();
 
   const handleCheckout = () => {
+    if (!isLoggedIn) {
+      navigate("/auth/login");
+      return;
+    }
     navigate("/checkout");
   };
 
@@ -24,7 +30,7 @@ function Cart() {
         <thead>
           <tr>
             <th>Image</th>
-            <th>Product</th>
+            <th>Item</th>
             <th>Price</th>
             <th>Quantity</th>
             <th>Total</th>
@@ -54,11 +60,14 @@ function Cart() {
         </tbody>
       </table>
       <div className="d-flex justify-content-between">
-        <h4>Total: ${calculateTotal()}</h4>
+        <h4>Cart Total: ${calculateTotal()}</h4>
         <button className="btn btn-primary" onClick={handleCheckout}>
           Checkout
         </button>
       </div>
+      <br/>
+      <br/>
+      <br/>
     </div>
   );
 }

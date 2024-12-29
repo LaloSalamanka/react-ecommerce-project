@@ -1,0 +1,19 @@
+.item-name {
+    flex: 2; /* 增加寬度 */
+    white-space: nowrap; /* 防止換行 */
+    overflow: hidden; /* 隱藏超出部分 */
+    text-overflow: ellipsis; /* 使用省略號表示超出部分 */
+  }
+  
+  .list-group-item span {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .list-group-item span:first-child {
+    text-align: left;
+  }
+  
+  .list-group-item span:last-child {
+    text-align: right;
+  }
