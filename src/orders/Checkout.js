@@ -2,7 +2,8 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import { createOrder } from '../service/OrderService';
+import { createOrder } from '../services/OrderService';
+import { ToastContainer, toast } from 'react-toastify';
 import './Checkout.css'; // 引入 CSS 文件
 
 const Checkout = () => {
@@ -46,8 +47,15 @@ const Checkout = () => {
       // 清空購物車
       setCartItems([]);
 
-      // 導向至訂單確認頁面或其他頁面
-      navigate('/order-confirmation');
+      // 顯示成功提示
+      toast.success('Order placed successfully!', {
+        position: "top-center",
+      });
+
+      // 導向至 My Orders 頁面
+      setTimeout(() => {
+        navigate('/my-orders');
+      }, 2000); // 延遲 2 秒後導航
     } catch (error) {
       console.error('Error placing order:', error);
       setError('Failed to place order. Please try again.');
@@ -109,6 +117,7 @@ const Checkout = () => {
           </div>
           <button className="btn btn-primary mt-3" onClick={handlePlaceOrder}>Place Order</button>
         </div>
+        <ToastContainer />
       </div>
     </div>
   );

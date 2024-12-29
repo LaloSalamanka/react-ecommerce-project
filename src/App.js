@@ -7,10 +7,10 @@ import ProductList from "./products/ProductList";
 import SignUp from "./auth/SignUp";
 import Login from "./auth/Login";
 import Cart from "./shopping-cart/Cart";
-import Checkout from "./shopping-cart/Checkout";
+import Checkout from "./orders/Checkout";
 import { ProductProvider } from "./context/ProductContext"; // 引入 ProductProvider
 import { CartProvider } from "./context/CartContext";
-import OrderSuccess from "./shopping-cart/OrderSuccess";
+import MyOrders from "./orders/MyOrders";
 
 
 function App() {
@@ -25,7 +25,7 @@ function App() {
         
           <Template>
             <Routes>
-              <Route path="/order-success" element={<OrderSuccess />} />
+              <Route path="/my-orders" element={<MyOrders/>} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/auth/login" element={<Login />} />

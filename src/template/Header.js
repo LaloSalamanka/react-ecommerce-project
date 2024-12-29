@@ -27,6 +27,7 @@ function Header() {
   // 登出功能
   const handleLogout = () => {
     logout(); // 呼叫 AuthContext 的 logout 函數
+    navigate("/"); // 導向至首頁
   };
 
   function toggleDrawer() {
@@ -59,9 +60,16 @@ function Header() {
                   Explore
                 </Link>
               </li>
+              {isLoggedIn && (
+                <li className="nav-item">
+                  <Link to="/my-orders" className="nav-link" onClick={changeNav}>
+                    My Orders
+                  </Link>
+                </li>
+              )}
             </ul>
 
-           {/* 購物車位置 */}
+            {/* 購物車位置 */}
             <button
               type="button"
               className="btn btn-outline-dark me-3 d-none d-lg-inline"
@@ -97,7 +105,7 @@ function Header() {
             )}
           </div>
 
-           {/* 購物車位置 */}
+          {/* 購物車位置 */}
           <div className="d-inline-block d-lg-none">
             <button type="button" className="btn btn-outline-dark">
               <FontAwesomeIcon icon={["fas", "shopping-cart"]} />

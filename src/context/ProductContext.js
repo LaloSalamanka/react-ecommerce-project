@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-import { getProducts, getProductById } from "../service/ProductService";
+import { getProducts, getProductById } from "../services/ProductService";
 
 // 創建 ProductContext
 export const ProductContext = createContext();
