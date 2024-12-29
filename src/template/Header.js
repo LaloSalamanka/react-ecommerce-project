@@ -28,13 +28,14 @@ function Header() {
   const handleLogout = () => {
     logout(); // 呼叫 AuthContext 的 logout 函數
     navigate("/"); // 導向至首頁
+    changeNav(); // 關閉展開的導航欄
   };
 
   function toggleDrawer() {
     setOpenedDrawer(!openedDrawer);
   }
 
-  function changeNav(event) {
+  function changeNav() {
     if (openedDrawer) {
       setOpenedDrawer(false);
     }
@@ -53,51 +54,75 @@ function Header() {
             <span className="ms-2 h5">Shop</span>
           </Link>
 
-          <div className={"navbar-collapse offcanvas-collapse " + (openedDrawer ? "open" : "")}>
-            <ul className="navbar-nav me-auto mb-lg-0">
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            onClick={toggleDrawer}
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+
+          <div className={"collapse navbar-collapse " + (openedDrawer ? "show" : "")} id="navbarNav">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link to="/products" className="nav-link" onClick={changeNav}>
                   Explore
                 </Link>
               </li>
-              {isLoggedIn && (
-                <li className="nav-item">
-                  <Link to="/my-orders" className="nav-link" onClick={changeNav}>
-                    My Orders
-                  </Link>
-                </li>
-              )}
             </ul>
 
             {/* 購物車位置 */}
             <button
               type="button"
               className="btn btn-outline-dark me-3 d-none d-lg-inline"
-              onClick={() => navigate("/cart")}
+              onClick={() => {
+                navigate("/cart");
+                changeNav();
+              }}
             >
               <FontAwesomeIcon icon={["fas", "shopping-cart"]} />
               <span className="ms-3 badge rounded-pill bg-dark">{totalQuantity}</span>
             </button>
 
             {isLoggedIn ? (
-              <div className="d-flex align-items-center">
-                <span className="me-3">Welcome, {user?.firstName || "User"}!</span>
+              <div className="dropdown">
                 <button
-                  className="btn btn-outline-danger"
-                  onClick={handleLogout}
+                  className="btn btn-outline-primary dropdown-toggle d-flex align-items-center"
+                  type="button"
+                  id="userMenuButton"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
                 >
-                  Logout
+                  <FontAwesomeIcon icon={["fas", "user-alt"]} className="me-2" />
+                  <span>Welcome, {user?.firstName || "User"}!</span>
                 </button>
+                <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
+                  <li>
+                    <Link className="dropdown-item" to="/my-orders" onClick={changeNav}>
+                      My Orders
+                    </Link>
+                  </li>
+                  <li>
+                    <button className="dropdown-item" onClick={handleLogout}>
+                      Logout
+                    </button>
+                  </li>
+                </ul>
               </div>
             ) : (
               <ul className="navbar-nav d-flex align-items-center">
                 <li>
-                  <Link to="/auth/login" className="btn btn-primary me-2">
+                  <Link to="/auth/login" className="btn btn-primary me-2" onClick={changeNav}>
                     Login
                   </Link>
                 </li>
                 <li>
-                  <Link to="/auth/sign-up" className="btn btn-success">
+                  <Link to="/auth/sign-up" className="btn btn-success" onClick={changeNav}>
                     Sign Up
                   </Link>
                 </li>
@@ -107,17 +132,14 @@ function Header() {
 
           {/* 購物車位置 */}
           <div className="d-inline-block d-lg-none">
-            <button type="button" className="btn btn-outline-dark">
+            <button type="button" className="btn btn-outline-dark" onClick={() => {
+              navigate("/cart");
+              changeNav();
+            }}>
               <FontAwesomeIcon icon={["fas", "shopping-cart"]} />
               <span className="ms-3 badge rounded-pill bg-dark">{totalQuantity}</span>
             </button>
-            <button
-              className="navbar-toggler p-0 border-0 ms-3"
-              type="button"
-              onClick={toggleDrawer}
-            >
-              <span className="navbar-toggler-icon"></span>
-            </button>
+            
           </div>
         </div>
       </nav>
