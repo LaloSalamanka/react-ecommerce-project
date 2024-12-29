@@ -1,21 +1,19 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import Cookies from 'js-cookie';
 import { AuthContext } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 
 function Login() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [inputError, setInputError] = useState(false); // 錯誤狀態
   const [error, setError] = useState("");
 
   // 設定登入狀態
   const { setIsLoggedIn, setUser } = useContext(AuthContext); // 使用 Context
-  const { loadCart } = useCart();
+  const { loadCart, cartItems, setCartItems } = useCart();
 
   // 處理輸入變更
   const handleChange = (e) => {
@@ -54,8 +52,18 @@ function Login() {
       if (data.loggedIn) {
         setIsLoggedIn(true);
         setUser(data.user);
-        localStorage.setItem("currentUserId", data.user.id); // 存儲用戶 ID
-        loadCart(data.user.id); // 加載購物車數據
+        Cookies.set("currentUserId", data.user.userId, { expires: 7, path: '/' }); // 存儲用戶 ID 到 cookie
+
+        // 加載用戶的購物車數據
+        await loadCart(data.user.userId);
+
+        // 合併本地存儲中的購物車數據
+        const localCart = localStorage.getItem('cartItems');
+        const parsedLocalCart = JSON.parse(localCart);
+        if (parsedLocalCart.length > 0) {
+          setCartItems(parsedLocalCart);
+          localStorage.removeItem('cartItems'); // 清除本地存儲中的購物車數據
+        }
         navigate("/"); // 導向至首頁
       } else {
         setIsLoggedIn(false);

@@ -33,26 +33,32 @@ function Cart() {
         </thead>
         <tbody>
           {cartItems.map((item) => (
-            <tr key={item.id}>
-              <td><img src={item.imageUrl} alt={item.productName} width="50" /></td>
-              <td>{item.productName}</td>
-              <td>${item.price.toFixed(2)}</td>
-              <td>{item.quantity}</td>
-              <td>${(item.price * item.quantity).toFixed(2)}</td>
+            <tr key={item.productId}>
               <td>
-                <button className="btn btn-danger" onClick={() => removeFromCart(item.id)}>Remove</button>
+                <img src={item.imageUrl} alt={item.productName} width="50" />
+              </td>
+              <td>{item.productName}</td>
+              <td>${item.price}</td>
+              <td>{item.quantity}</td>
+              <td>${item.price * item.quantity}</td>
+              <td>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => removeFromCart(item.productId)}
+                >
+                  Remove
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <div className="d-flex justify-content-between align-items-center">
-        <h4>Total: ${calculateTotal().toFixed(2)}</h4>
-        <button className="btn btn-primary" onClick={handleCheckout}>Checkout</button>
+      <div className="d-flex justify-content-between">
+        <h4>Total: ${calculateTotal()}</h4>
+        <button className="btn btn-primary" onClick={handleCheckout}>
+          Checkout
+        </button>
       </div>
-      <br />
-      <br />
-      <br />
     </div>
   );
 }

@@ -1,21 +1,18 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, createContext, useContext } from 'react';
+import Cookies from 'js-cookie';
+import { useCart } from "./CartContext";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    const savedLoginState = localStorage.getItem("isLoggedIn");
-    return savedLoginState === "true";
-  });
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+  const { setCartItems, loadCart } = useCart(); // 從 CartContext 中獲取 setCartItems 和 loadCart 函數
 
-  // 初始化時從 localStorage 載入資料
+  // 初始化時從 cookie 載入資料
   useEffect(() => {
-    const savedLoginState = localStorage.getItem("isLoggedIn");
-    const savedUser = localStorage.getItem("user");
+    const savedLoginState = Cookies.get("isLoggedIn");
+    const savedUser = Cookies.get("user");
 
     if (savedLoginState === "true") {
       setIsLoggedIn(true);
@@ -25,43 +22,40 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // 每當狀態變更時，同步到 localStorage
+  // 每當狀態變更時，同步到 cookie
   useEffect(() => {
-    localStorage.setItem("isLoggedIn", isLoggedIn ? "true" : "false");
+    Cookies.set("isLoggedIn", isLoggedIn ? "true" : "false", { expires: 7, path: '/' });
     if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
+      Cookies.set("user", JSON.stringify(user), { expires: 7, path: '/' });
+      Cookies.set("currentUserId", user.userId, { expires: 7, path: '/' }); // 儲存當前用戶 ID
     } else {
-      localStorage.removeItem("user");
+      Cookies.remove("user", { path: '/' });
+      Cookies.remove("currentUserId", { path: '/' });
     }
   }, [isLoggedIn, user]);
 
   const login = (userData) => {
     setIsLoggedIn(true);
     setUser(userData);
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("currentUserId", userData.id); // 儲存當前用戶 ID
+    Cookies.set("isLoggedIn", "true", { expires: 7, path: '/' });
+    Cookies.set("user", JSON.stringify(userData), { expires: 7, path: '/' });
+    Cookies.set("currentUserId", userData.userId, { expires: 7, path: '/' }); // 儲存當前用戶 ID
+
+    // 加載用戶的購物車數據
+    loadCart(userData.userId);
   };
 
   const logout = () => {
-    setIsLoggedIn(false);
+    setCartItems([]);  // 清空購物車資料
+    setIsLoggedIn(false);  // 清除用戶資料
     setUser(null);
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("user");
-    localStorage.removeItem("currentUserId"); // 清除當前用戶 ID
+    Cookies.remove("isLoggedIn", { path: '/' });
+    Cookies.remove("user", { path: '/' });
+    Cookies.remove("currentUserId", { path: '/' });
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        isLoggedIn,
-        setIsLoggedIn,
-        user,
-        setUser,
-        login,
-        logout,
-      }}
-    >
+    <AuthContext.Provider value={{ isLoggedIn, user, login, logout, setIsLoggedIn, setUser }}>
       {children}
     </AuthContext.Provider>
   );

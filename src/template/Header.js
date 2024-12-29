@@ -14,6 +14,9 @@ function Header() {
   const { cartItems, loadCart } = useCart();
   const navigate = useNavigate();
 
+  // 計算購物車中所有商品的 quantity 加總
+  const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+
   useEffect(() => {
     const userId = localStorage.getItem("currentUserId");
     if (userId) {
@@ -65,7 +68,7 @@ function Header() {
               onClick={() => navigate("/cart")}
             >
               <FontAwesomeIcon icon={["fas", "shopping-cart"]} />
-              <span className="ms-3 badge rounded-pill bg-dark">{cartItems.length}</span>
+              <span className="ms-3 badge rounded-pill bg-dark">{totalQuantity}</span>
             </button>
 
             {isLoggedIn ? (
@@ -98,7 +101,7 @@ function Header() {
           <div className="d-inline-block d-lg-none">
             <button type="button" className="btn btn-outline-dark">
               <FontAwesomeIcon icon={["fas", "shopping-cart"]} />
-              <span className="ms-3 badge rounded-pill bg-dark">{cartItems.length}</span>
+              <span className="ms-3 badge rounded-pill bg-dark">{totalQuantity}</span>
             </button>
             <button
               className="navbar-toggler p-0 border-0 ms-3"
