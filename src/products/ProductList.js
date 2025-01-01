@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Product from "./Product";
 import ProductH from "./ProductH";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ScrollToTopOnMount from "../template/ScrollToTopOnMount";
 import { ProductContext } from "../context/ProductContext";
@@ -19,6 +19,7 @@ const brands = ["Apple", "Samsung", "Google", "HTC"];
 
 const manufacturers = ["HOCO", "Nillkin", "Remax", "Baseus"];
 
+// 左邊的篩選條件
 function FilterMenuLeft() {
   return (
     <ul className="list-group list-group-flush rounded">
@@ -97,26 +98,44 @@ function FilterMenuLeft() {
   );
 }
 
+// ProductList 元件
 function ProductList() {
   const [viewType, setViewType] = useState({ grid: true });
-  const {products} = useContext(ProductContext);
+  const { products, totalProducts, fetchProducts } = useContext(ProductContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 6; // 每頁顯示的商品數量
+
+  useEffect(() => {
+    const params = {
+      limit: productsPerPage,
+      offset: (currentPage - 1) * productsPerPage,
+      orderBy: "created_date",
+      sort: "desc",
+    };
+    fetchProducts(params);
+  }, [currentPage, fetchProducts]);
+  
 
   function changeViewType() {
     setViewType({
       grid: !viewType.grid,
     });
-  }
+  };
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const totalPages = Math.ceil(totalProducts / productsPerPage);
 
   return (
     <div className="container mt-5 py-4 px-xl-5">
       <ScrollToTopOnMount />
+      {/* header 回 Product 首頁的連結 */}
       <nav aria-label="breadcrumb" className="bg-custom-light rounded">
         <ol className="breadcrumb p-3 mb-0">
           <li className="breadcrumb-item">
             <Link
               className="text-decoration-none link-secondary"
               to="/products"
-              
             >
               All Products
             </Link>
@@ -127,6 +146,7 @@ function ProductList() {
         </ol>
       </nav>
 
+      {/* 這一段是 for 小螢幕去看左邊的篩選條件 可以水平滑動 */}
       <div className="h-scroller d-block d-lg-none">
         <nav className="nav h-underline">
           {categories.map((v, i) => {
@@ -135,7 +155,6 @@ function ProductList() {
                 <Link
                   to="/products"
                   className="btn btn-sm btn-outline-dark rounded-pill"
-                  
                 >
                   {v}
                 </Link>
@@ -144,7 +163,8 @@ function ProductList() {
           })}
         </nav>
       </div>
-
+      
+      {/* 這一段也是 for 小螢幕去看左邊的篩選條件 下拉式選單選 Brands 那些的 */}
       <div className="row mb-3 d-block d-lg-none">
         <div className="col-12">
           <div id="accordionFilter" className="accordion shadow-sm">
@@ -174,7 +194,8 @@ function ProductList() {
           </div>
         </div>
       </div>
-
+      
+      {/* 這一段是普通螢幕上顯示的 All Models 下拉式選單、搜尋欄、跟改變 grid 的那個按鈕 */}
       <div className="row mb-4 mt-lg-3">
         <div className="d-none d-lg-block col-lg-3">
           <div className="border rounded shadow-sm">
@@ -218,6 +239,8 @@ function ProductList() {
                 </button>
               </div>
             </div>
+
+             {/* 這一段是呈現商品內容的地方 */}
             <div
               className={
                 "row row-cols-1 row-cols-md-2 row-cols-lg-2 g-3 mb-4 flex-shrink-0 " +
@@ -240,36 +263,30 @@ function ProductList() {
                 );
               })) : (<p>Loading...</p>)}
             </div>
+
+            {/* 這一段是顯示頁數的地方 */}
             <div className="d-flex align-items-center mt-auto">
               <span className="text-muted small d-none d-md-inline">
-                Showing 10 of 100
+                Showing {currentPage * productsPerPage - productsPerPage + 1} to {Math.min(currentPage * productsPerPage, totalProducts)} of {totalProducts}
               </span>
               <nav aria-label="Page navigation example" className="ms-auto">
                 <ul className="pagination my-0">
-                  <li className="page-item">
-                    <a className="page-link" href="!#">
+                  <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                    <button className="page-link" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
                       Previous
-                    </a>
+                    </button>
                   </li>
-                  <li className="page-item">
-                    <a className="page-link" href="!#">
-                      1
-                    </a>
-                  </li>
-                  <li className="page-item active">
-                    <a className="page-link" href="!#">
-                      2
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link" href="!#">
-                      3
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link" href="!#">
+                  {[...Array(totalPages).keys()].map(number => (
+                    <li key={number + 1} className={`page-item ${currentPage === number + 1 ? "active" : ""}`}>
+                      <button onClick={() => paginate(number + 1)} className="page-link">
+                        {number + 1}
+                      </button>
+                    </li>
+                  ))}
+                  <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+                    <button className="page-link" onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>
                       Next
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </nav>

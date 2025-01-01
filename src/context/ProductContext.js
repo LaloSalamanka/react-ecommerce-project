@@ -7,11 +7,13 @@ export const ProductContext = createContext();
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [productDetail, setProductDetail] = useState(null);
+  const [totalProducts, setTotalProducts] = useState(0);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (params) => {
     try {
-      const data = await getProducts();
+      const data = await getProducts(params);
       setProducts(data.results);
+      setTotalProducts(data.total);
     } catch (error) {
       console.error("Failed to fetch products:", error);
     }
@@ -27,7 +29,7 @@ export const ProductProvider = ({ children }) => {
   };
 
   return (
-    <ProductContext.Provider value={{ products, productDetail, fetchProducts, fetchProductById }}>
+    <ProductContext.Provider value={{ products, productDetail, totalProducts, fetchProducts, fetchProductById }}>
       {children}
     </ProductContext.Provider>
   );

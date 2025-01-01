@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 
 function ProductH({ product, percentOff }) {
   const price = product.price || 10000; // 假設 price 是從後端資料中來的
-  let offPrice = `${price}Ks`; // 默認價格
+  let offPrice = `$${price}`; // 默認價格
 
   // 計算折扣價格
   if (percentOff > 0) {
     offPrice = (
       <>
-        <del>{price}Ks</del> {price - (percentOff * price) / 100}Ks
+        <del>${price}</del> ${price - (percentOff * price) / 100}
       </>
     );
   }

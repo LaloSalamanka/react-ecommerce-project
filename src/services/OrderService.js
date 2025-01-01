@@ -1,6 +1,6 @@
 const BASE_URL = 'http://localhost:8080/users';
 
-export const getOrders = async (userId, limit = 10, offset = 0) => {
+export const getOrders = async (userId, limit = 11, offset = 0) => {
   try {
     const response = await fetch(`${BASE_URL}/${userId}/orders?limit=${limit}&offset=${offset}`);
     if (!response.ok) {
