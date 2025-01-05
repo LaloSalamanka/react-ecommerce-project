@@ -1,10 +1,11 @@
 import RelatedProduct from "./RelatedProduct";
 import Ratings from "react-ratings-declarative";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate  } from "react-router-dom";
 import ScrollToTopOnMount from "../../template/ScrollToTopOnMount";
 import React, { useEffect, useContext, useState } from "react";
 import { ProductContext } from "../../context/ProductContext";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 
 
 const iconPath =
@@ -19,6 +20,11 @@ function ProductDetail() {
   // 購物車相關變數
   const { addToCart } = useCart();
   const [added, setAdded] = useState(false);  // 用來顯示提示訊息
+
+  const navigate = useNavigate();  // 使用 useNavigate 進行頁面跳轉
+  const {isLoggedIn} = useAuth();
+  
+
   
 
   // 從後端 fetch 商品資料
@@ -40,6 +46,16 @@ function ProductDetail() {
     setTimeout(() => setAdded(false), 2000); // 2秒後隱藏提示
   };
 
+  // Buy Now 功能
+  const handleBuyNow = () => {
+    if (!isLoggedIn) {
+      // 如果用戶未登入，跳轉至登入頁面
+      navigate("/auth/login");  // 假設登入頁面的路徑是 /login
+    } else {
+      addToCart(productDetail);  // 先將商品加入購物車
+      navigate("/checkout");  // 跳轉到結帳頁面
+    }
+  };
   
 
   return (
@@ -53,18 +69,18 @@ function ProductDetail() {
               All Products
             </Link>
           </li>
-          <li className="breadcrumb-item">
+          {/* <li className="breadcrumb-item">
             <a className="text-decoration-none link-secondary" href="!#">
               Cases &amp; Covers
             </a>
-          </li>
+          </li> */}
           <li className="breadcrumb-item active" aria-current="page">
             {productDetail.productName}
           </li>
         </ol>
       </nav>
       <div className="row mb-4">
-        <div className="d-none d-lg-block col-lg-1">
+        {/* <div className="d-none d-lg-block col-lg-1">
           <div className="image-vertical-scroller">
             <div className="d-flex flex-column">
               {Array.from({ length: 10 }, (_, i) => {
@@ -81,7 +97,7 @@ function ProductDetail() {
               })}
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="col-lg-6">
           <div className="row">
             <div className="col-12 mb-4">
@@ -105,10 +121,10 @@ function ProductDetail() {
                 <button className="btn btn-outline-dark py-2 w-100" onClick={handleAddToCart}>
                   Add to cart
                 </button>
-                {added && <p className="text-success mt-2">商品已加入購物車</p>} {/* 顯示提示 */}
+                {added && <p className="text-success mt-2">The item has been added!</p>} {/* 顯示提示 */}
               </div>
               <div className="col">
-                <button className="btn btn-dark py-2 w-100">Buy now</button>
+                <button className="btn btn-dark py-2 w-100" onClick={handleBuyNow}>Buy now</button>
               </div>
             </div>
 
@@ -117,15 +133,6 @@ function ProductDetail() {
             <dl className="row">
               <dt className="col-sm-4">Category</dt>
               <dd className="col-sm-8 mb-3">{productDetail.category}</dd>
-
-              {/* <dt className="col-sm-4">Brand</dt>
-              <dd className="col-sm-8 mb-3">iPhone X</dd>
-
-              <dt className="col-sm-4">Manufacturer</dt>
-              <dd className="col-sm-8 mb-3">Nillkin</dd>
-
-              <dt className="col-sm-4">Color</dt>
-              <dd className="col-sm-8 mb-3">Red, Green, Blue, Pink</dd> */}
 
               <dt className="col-sm-4">Status</dt>
               <dd className="col-sm-8 mb-3">Instock</dd>
@@ -172,7 +179,7 @@ function ProductDetail() {
           {products && products.length > 0 ? (
             products
               .filter(product => product.productId !== productDetail.productId && product.category === productDetail.category) // 過濾掉與當前產品相同的產品
-              .slice(0, 4) // 取得前 6 個產品
+              .slice(0, 4) 
               .map(product => (
                 <RelatedProduct key={product.productId} product={product} />
               ))

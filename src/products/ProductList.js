@@ -6,92 +6,37 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ScrollToTopOnMount from "../template/ScrollToTopOnMount";
 import { ProductContext } from "../context/ProductContext";
 
-const categories = [
-  "All Products",
-  "Phones & Tablets",
-  "Cases & Covers",
-  "Screen Guards",
-  "Cables & Chargers",
-  "Power Banks",
-];
 
-const brands = ["Apple", "Samsung", "Google", "HTC"];
+const categories = {
+  "All Products": "",
+  "T-Shirts": "T_SHIRT",
+  "Pants": "PANTS",
+  "Jackets": "JACKET",
+};
 
-const manufacturers = ["HOCO", "Nillkin", "Remax", "Baseus"];
 
 // 左邊的篩選條件
-function FilterMenuLeft() {
+function FilterMenuLeft({setSelectedCategory} ) {
+
+  
+  
+  
   return (
     <ul className="list-group list-group-flush rounded">
       <li className="list-group-item d-none d-lg-block">
-        <h5 className="mt-1 mb-2">Browse</h5>
-        <div className="d-flex flex-wrap my-2">
-          {categories.map((v, i) => {
+        <h5 className="mt-1 mb-3 px-5">Browse</h5>
+        <div className="d-flex flex-column justify-content-center my-2">
+        {Object.keys(categories).map((key, i) => {
             return (
-              <Link
+              <button
                 key={i}
-                to="/products"
-                className="btn btn-sm btn-outline-dark rounded-pill me-2 mb-2"
-                replace
+                onClick={() => setSelectedCategory(categories[key])} // 更新選中的 category
+                className="btn btn-sm btn-outline-dark rounded-pill me-4 mb-2 "
               >
-                {v}
-              </Link>
+                {key}
+              </button>
             );
           })}
-        </div>
-      </li>
-      <li className="list-group-item">
-        <h5 className="mt-1 mb-1">Brands</h5>
-        <div className="d-flex flex-column">
-          {brands.map((v, i) => {
-            return (
-              <div key={i} className="form-check">
-                <input className="form-check-input" type="checkbox" />
-                <label className="form-check-label" htmlFor="flexCheckDefault">
-                  {v}
-                </label>
-              </div>
-            );
-          })}
-        </div>
-      </li>
-      <li className="list-group-item">
-        <h5 className="mt-1 mb-1">Manufacturers</h5>
-        <div className="d-flex flex-column">
-          {manufacturers.map((v, i) => {
-            return (
-              <div key={i} className="form-check">
-                <input className="form-check-input" type="checkbox" />
-                <label className="form-check-label" htmlFor="flexCheckDefault">
-                  {v}
-                </label>
-              </div>
-            );
-          })}
-        </div>
-      </li>
-      <li className="list-group-item">
-        <h5 className="mt-1 mb-2">Price Range</h5>
-        <div className="d-grid d-block mb-3">
-          <div className="form-floating mb-2">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Min"
-              defaultValue="100000"
-            />
-            <label htmlFor="floatingInput">Min Price</label>
-          </div>
-          <div className="form-floating mb-2">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Max"
-              defaultValue="500000"
-            />
-            <label htmlFor="floatingInput">Max Price</label>
-          </div>
-          <button className="btn btn-dark">Apply</button>
         </div>
       </li>
     </ul>
@@ -100,20 +45,45 @@ function FilterMenuLeft() {
 
 // ProductList 元件
 function ProductList() {
+
+  // 分類相關變數
+  const [selectedCategory, setSelectedCategory] = useState(null); // 管理選中的 category
+
   const [viewType, setViewType] = useState({ grid: true });
   const { products, totalProducts, fetchProducts } = useContext(ProductContext);
+
+  // 頁面相關變數
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6; // 每頁顯示的商品數量
 
+  // 搜尋框相關變數
+  const [searchQuery, setSearchQuery] = useState(""); // 搜尋框輸入值
+  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery); // 防抖輸入值
+
+  
+
+
+  // 防抖
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(searchQuery); // 延遲更新搜尋值
+    }, 500); // 延遲 500 毫秒
+
+    return () => clearTimeout(handler); // 清除上次延遲
+  }, [searchQuery]);
+
+
   useEffect(() => {
     const params = {
+      category: selectedCategory,
       limit: productsPerPage,
       offset: (currentPage - 1) * productsPerPage,
       orderBy: "created_date",
       sort: "desc",
+      search: debouncedQuery || undefined, // 搜尋關鍵字參數
     };
     fetchProducts(params);
-  }, [currentPage, fetchProducts]);
+  }, [currentPage, fetchProducts, debouncedQuery, selectedCategory]);
   
 
   function changeViewType() {
@@ -121,6 +91,8 @@ function ProductList() {
       grid: !viewType.grid,
     });
   };
+
+  
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -140,66 +112,34 @@ function ProductList() {
               All Products
             </Link>
           </li>
-          <li className="breadcrumb-item active" aria-current="page">
+          {/* <li className="breadcrumb-item active" aria-current="page">
             Cases &amp; Covers
-          </li>
+          </li> */}
         </ol>
       </nav>
 
       {/* 這一段是 for 小螢幕去看左邊的篩選條件 可以水平滑動 */}
-      <div className="h-scroller d-block d-lg-none">
+      <div className="h-scroller d-block d-lg-none" style={{ marginTop: '15px' }}>
         <nav className="nav h-underline">
-          {categories.map((v, i) => {
+        {Object.keys(categories).map((key, i) => {
             return (
-              <div key={i} className="h-link me-2">
-                <Link
-                  to="/products"
-                  className="btn btn-sm btn-outline-dark rounded-pill"
-                >
-                  {v}
-                </Link>
-              </div>
+              <button
+                key={i}
+                onClick={() => setSelectedCategory(categories[key])} // 更新選中的 category
+                className="btn btn-sm btn-outline-dark rounded-pill me-2 mb-2"
+              >
+                {key}
+              </button>
             );
           })}
         </nav>
-      </div>
-      
-      {/* 這一段也是 for 小螢幕去看左邊的篩選條件 下拉式選單選 Brands 那些的 */}
-      <div className="row mb-3 d-block d-lg-none">
-        <div className="col-12">
-          <div id="accordionFilter" className="accordion shadow-sm">
-            <div className="accordion-item">
-              <h2 className="accordion-header" id="headingOne">
-                <button
-                  className="accordion-button fw-bold collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseFilter"
-                  aria-expanded="false"
-                  aria-controls="collapseFilter"
-                >
-                  Filter Products
-                </button>
-              </h2>
-            </div>
-            <div
-              id="collapseFilter"
-              className="accordion-collapse collapse"
-              data-bs-parent="#accordionFilter"
-            >
-              <div className="accordion-body p-0">
-                <FilterMenuLeft />
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
       
       {/* 這一段是普通螢幕上顯示的 All Models 下拉式選單、搜尋欄、跟改變 grid 的那個按鈕 */}
       <div className="row mb-4 mt-lg-3">
         <div className="d-none d-lg-block col-lg-3">
           <div className="border rounded shadow-sm">
-            <FilterMenuLeft />
+            <FilterMenuLeft setSelectedCategory={setSelectedCategory} />
           </div>
         </div>
         <div className="col-lg-9">
@@ -224,9 +164,12 @@ function ProductList() {
                     type="text"
                     placeholder="Search products..."
                     aria-label="search input"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)} // 更新搜尋值
                   />
                   <button className="btn btn-outline-dark">
                     <FontAwesomeIcon icon={["fas", "search"]} />
+                    
                   </button>
                 </div>
                 <button

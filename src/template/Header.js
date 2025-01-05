@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { faTshirt } from '@fortawesome/free-solid-svg-icons'; // 引入 faTshirt
+
 
 function Header() {
   const [openedDrawer, setOpenedDrawer] = useState(false);
@@ -47,7 +49,7 @@ function Header() {
         <div className="container-fluid">
           <Link className="navbar-brand" to="/" onClick={changeNav}>
             <FontAwesomeIcon
-              icon={["fab", "bootstrap"]}
+              icon={faTshirt}
               className="ms-1"
               size="lg"
             />

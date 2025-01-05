@@ -54,7 +54,7 @@
   position: relative;
   z-index: 2;
   height: 3.75rem;
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
 }
 
 .h-scroller .nav {
@@ -67,6 +67,10 @@
   text-align: center;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
+  position: relative; /* 設置為相對定位 */
+
+  z-index: 10; /* 增加 z-index 確保在其他元素之上 */
+
 }
 
 .h-underline .h-link {

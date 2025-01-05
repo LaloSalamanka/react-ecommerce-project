@@ -1,6 +1,4 @@
 import BannerZero from "./banner-0.jpg";
-import BannerOne from "./banner-1.jpg";
-import BannerTwo from "./banner-2.jpg";
 
 function BannerIncidator(props) {
   return (
@@ -52,9 +50,9 @@ function Banner() {
         <BannerIncidator index="2" />
       </div>
       <div className="carousel-inner">
-        <BannerImage image={BannerZero} active={true} />
-        <BannerImage image={BannerOne} />
-        <BannerImage image={BannerTwo} />
+        <BannerImage image={BannerZero} active={true}/>
+        <BannerImage image="https://media.istockphoto.com/id/1201024668/photo/stylish-man-wearing-sunglasses-and-white-shirt-city-life.jpg?s=1024x1024&w=is&k=20&c=o3q16xv-pETEOQsONNzddoHzlr860v0je0xn4djBpGI="/>
+        <BannerImage image="https://media.istockphoto.com/id/1922703877/photo/gen-z-teenager-poses-full-body-towards-camera-showing-attitude.jpg?s=1024x1024&w=is&k=20&c=oRj_OvTrHugTjBeSoVkIwcJ62xN-xCVvehp6hoNdKqg=" />
       </div>
     </div>
   );

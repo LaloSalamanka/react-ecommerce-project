@@ -2,6 +2,8 @@ import React from "react";
 import { useCart } from "../context/CartContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { FaShoppingCart } from 'react-icons/fa'; // 加入圖標
+
 
 function Cart() {
   const { cartItems, removeFromCart } = useCart();
@@ -26,6 +28,13 @@ function Cart() {
       <br />
       <br />
       <h2 className="mb-4">Shopping Cart</h2>
+      {cartItems.length === 0 ? (
+        <div className="alert  text-center">
+          <FaShoppingCart size={50} className="mb-3" />
+          <h4>Your Cart is Empty!</h4>
+          <p>It looks like you haven’t added anything to your cart yet. Start shopping now!</p>
+        </div>
+      ) : (
       <table className="table">
         <thead>
           <tr>
@@ -58,10 +67,10 @@ function Cart() {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table>)}
       <div className="d-flex justify-content-between">
         <h4>Cart Total: ${calculateTotal()}</h4>
-        <button className="btn btn-primary" onClick={handleCheckout}>
+        <button className="btn btn-primary" onClick={handleCheckout} disabled={cartItems.length === 0}>
           Checkout
         </button>
       </div>
