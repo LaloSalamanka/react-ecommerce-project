@@ -17,10 +17,6 @@ const categories = {
 
 // 左邊的篩選條件
 function FilterMenuLeft({setSelectedCategory} ) {
-
-  
-  
-  
   return (
     <ul className="list-group list-group-flush rounded">
       <li className="list-group-item d-none d-lg-block">
@@ -112,9 +108,6 @@ function ProductList() {
               All Products
             </Link>
           </li>
-          {/* <li className="breadcrumb-item active" aria-current="page">
-            Cases &amp; Covers
-          </li> */}
         </ol>
       </nav>
 
@@ -145,19 +138,8 @@ function ProductList() {
         <div className="col-lg-9">
           <div className="d-flex flex-column h-100">
             <div className="row mb-3">
-              <div className="col-lg-3 d-none d-lg-block">
-                <select
-                  className="form-select"
-                  aria-label="Default select example"
-                  defaultValue=""
-                >
-                  <option value="">All Models</option>
-                  <option value="1">iPhone X</option>
-                  <option value="2">iPhone Xs</option>
-                  <option value="3">iPhone 11</option>
-                </select>
-              </div>
-              <div className="col-lg-9 col-xl-5 offset-xl-4 d-flex flex-row">
+              
+              <div className="col-lg-12 col-xl-5 offset-xl-7 d-flex flex-row">
                 <div className="input-group">
                   <input
                     className="form-control"
