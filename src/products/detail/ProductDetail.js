@@ -15,15 +15,19 @@ function ProductDetail() {
 
   // 商品相關變數
   const { id } = useParams(); 
-  const { productDetail, fetchProductById } = useContext(ProductContext); 
+  const { products, productDetail, fetchProductById, fetchProducts } = useContext(ProductContext); 
   // 購物車相關變數
   const { addToCart } = useCart();
   const [added, setAdded] = useState(false);  // 用來顯示提示訊息
+  
 
   // 從後端 fetch 商品資料
   useEffect(() => {
     fetchProductById(id); 
-  }, [id, fetchProductById]);
+    if (products.length === 0) {
+      fetchProducts(); // 只有在 products 為空時才 fetch
+    }
+  }, [id, fetchProductById, fetchProducts, products.length]);
 
   if (!productDetail) {
     return <div>Loading...</div>;
@@ -35,6 +39,8 @@ function ProductDetail() {
     setAdded(true);
     setTimeout(() => setAdded(false), 2000); // 2秒後隱藏提示
   };
+
+  
 
   return (
     // breadcrumb 是 header 下顯示的上層頁面導航
@@ -163,11 +169,16 @@ function ProductDetail() {
           <hr />
           <h4 className="text-muted my-4">Related products</h4>
           <div className="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-3">
-            {Array.from({ length: 4 }, (_, i) => {
-              return (
-                <RelatedProduct key={i} percentOff={i % 2 === 0 ? 15 : null} />
-              );
-            })}
+          {products && products.length > 0 ? (
+            products
+              .filter(product => product.productId !== productDetail.productId && product.category === productDetail.category) // 過濾掉與當前產品相同的產品
+              .slice(0, 4) // 取得前 6 個產品
+              .map(product => (
+                <RelatedProduct key={product.productId} product={product} />
+              ))
+          ) : (
+            <p className="text-center">No related products available.</p>
+          )}
           </div>
         </div>
       </div>

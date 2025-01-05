@@ -251,15 +251,14 @@ function ProductList() {
               // 如果 viewType 為 true, 顯示 Product.js, 否則顯示 ProductH.js
               Array.from({ length: products.length }, (_, i) => {
                 const product = products[i]; // 取得對應的產品資料
-                // 設置折扣，這裡您可以根據需要來設定折扣
-                const percentOff = product.percentOff || (i % 2 === 0 ? 15 : null);
+                // const percentOff = product.percentOff || (i % 2 === 0 ? 15 : null);
                 if (viewType.grid) {
                   return (
-                    <Product key={product.productId} product={product} percentOff={percentOff} />
+                    <Product key={product.productId} product={product}  />
                   );
                 }
                 return (
-                  <ProductH key={product.productId} product={product} percentOff={percentOff} />
+                  <ProductH key={product.productId} product={product}  />
                 );
               })) : (<p>Loading...</p>)}
             </div>
