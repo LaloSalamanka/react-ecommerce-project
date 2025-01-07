@@ -120,40 +120,13 @@ function Login() {
                     Login
                   </button>
                 </div>
-                <div className="col-md-12">
-                  <div className="row g-2">
-                    <div className="col">
-                      <hr className="text-muted" />
-                    </div>
-                    <div className="col-auto align-self-center text-muted">
-                      or continue with
-                    </div>
-                    <div className="col">
-                      <hr className="text-muted" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-12">
-                  <div className="hstack gap-2 justify-content-center">
-                    <button className="btn-facebook rounded-circle">
-                      <FontAwesomeIcon icon={["fab", "facebook-f"]} />
-                    </button>
-                    <button className="btn-google rounded-circle">
-                      <FontAwesomeIcon icon={["fab", "google"]} />
-                    </button>
-                    <button className="btn-apple rounded-circle">
-                      <FontAwesomeIcon icon={["fab", "apple"]} />
-                    </button>
-                  </div>
-                </div>
               </form>
             </div>
             <hr className="text-muted my-0" />
             <div className="text-center p-3">
               Don&lsquo;t have an account?{" "}
-              <Link to="/auth/sign-up" className="text-decoration-none fw-medium">
-                Register
+              <Link to="/auth/sign-up" className="text-decoration-none fw-medium link-secondary">
+                Sign Up
               </Link>
             </div>
           </div>

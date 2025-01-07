@@ -35,6 +35,12 @@ const MyOrders = () => {
       <br/>
       <br/>
       <h2>My Orders</h2>
+      {orders.length === 0 ? (
+        <div className="alert alert-info text-center mt-4" role="alert">
+          <h4>No Orders Found</h4>
+          <p>You currently have no orders. Start shopping to create your first order!</p>
+        </div>
+      ) :(
       <table className="table table-hover">
         <thead>
           <tr>
@@ -83,6 +89,7 @@ const MyOrders = () => {
           ))}
         </tbody>
       </table>
+      )}
     </div>
   );
 };

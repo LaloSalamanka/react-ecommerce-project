@@ -170,18 +170,11 @@ function SignUp() {
                     Sign Up
                   </button>
                 </div>
-                <div className="col-md-12">
-                  <div className="text-muted bg-light rounded p-3 border small">
-                    By clicking the &lsquo;Sign Up&lsquo; button, you confirm
-                    that you accept our{" "}
-                    <a href="#">Terms of use and Privacy Policy</a>.
-                  </div>
-                </div>
               </form>
               <hr className="text-muted" />
               <div className="text-center">
                 Already have an account?{" "}
-                <Link to="/auth/login" className="text-decoration-none fw-medium">
+                <Link to="/auth/login" className="text-decoration-none fw-medium link-secondary">
                   Login
                 </Link>
               </div>
