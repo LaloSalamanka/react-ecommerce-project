@@ -1,6 +1,6 @@
 import React, { useState, useEffect  } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
+import AuthService from "../services/AuthService";
 
 function SignUp() {
 
@@ -58,29 +58,18 @@ function SignUp() {
       setEmailInputError("");
   
       try {
-        // 發送 POST 請求
-        const response = await fetch("http://localhost:8080/users/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
-  
-        if (response.ok) {
-          setSuccessMessage("Registration successful! You are going to be redirected to the login page.");
-          setTimeout(() => {
-            navigate("/auth/login"); // 跳轉到 login 頁面
-          }, 2000); // 2 秒後跳轉
-        } 
-        else{
-          setEmailError("Registration failed. Please try again.");
-          setEmailInputError(true);
-        }        
-      } 
-        catch (error) {
-          setError("An error occurred. Please try again later.");
-        }
+        const data = await AuthService.register(formData);
+    
+        setSuccessMessage(
+          "Registration successful! You are going to be redirected to the login page."
+        );
+        setTimeout(() => {
+          navigate("/auth/login");
+        }, 2000);
+      } catch (error) {
+        setError("Registration failed. Please try again later.");
+        setEmailInputError(true);
+      }
     };
 
   return (

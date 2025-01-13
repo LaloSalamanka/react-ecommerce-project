@@ -1,9 +1,9 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { AuthContext } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import AuthService from "../services/AuthService";
 
 function Login() {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ function Login() {
 
   // 設定登入狀態
   const { setIsLoggedIn, setUser } = useContext(AuthContext); // 使用 Context
-  const { loadCart, cartItems, setCartItems } = useCart();
+  const { loadCart, setCartItems } = useCart();
 
   // 處理輸入變更
   const handleChange = (e) => {
@@ -31,22 +31,7 @@ function Login() {
     e.preventDefault(); // 阻止頁面刷新
     setError(""); // 清空錯誤訊息
     try {
-      // 發送 POST 請求
-      const response = await fetch("http://localhost:8080/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      // 檢查 HTTP 狀態碼
-      if (!response.ok) {
-        throw new Error("Invalid credentials"); // 擲出錯誤以處理失敗邏輯
-      }
-
-      // 解析 JSON 數據
-      const data = await response.json();
+      const data = await AuthService.login(formData);
 
       // 更新登入狀態
       if (data.loggedIn) {
